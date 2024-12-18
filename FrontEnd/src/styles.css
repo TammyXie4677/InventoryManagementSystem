@@ -2,7 +2,7 @@
 /* Custom styles to make the form even more visually appealing */
 .container {
     max-width: 100%;
-    padding: 20px;
+    padding: 10px;
   }
   
   .col-md-6 {
@@ -14,9 +14,5 @@
   
   h2 {
     font-weight: bold;
-  }
-  
-  form {
-    padding-top: 20px;
   }
   
