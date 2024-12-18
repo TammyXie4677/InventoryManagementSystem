@@ -1,7 +1,12 @@
 from flask import Flask, send_from_directory
+from flask_compress import Compress
+from flask_cors import CORS
 import os
 
 app = Flask(__name__, static_folder='static/browser')
+
+Compress(app)
+CORS(app)
 
 # Serve the Angular application (index.html)
 @app.route('/')
