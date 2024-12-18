@@ -1,21 +1,27 @@
-<h2>Register</h2>
-<form>
-  <div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" required />
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-md-6 col-lg-4">
+    <h2 class="text-center mb-4 display-4">Register</h2>
+    <form>
+      <div class="mb-4">
+        <label for="username" class="form-label fs-5">Username:</label>
+        <input type="text" id="username" class="form-control form-control-lg" required />
+      </div>
+      <div class="mb-4">
+        <label for="email" class="form-label fs-5">Email:</label>
+        <input type="email" id="email" class="form-control form-control-lg" required />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label fs-5">Password:</label>
+        <input type="password" id="password" class="form-control form-control-lg" required />
+      </div>
+      <div class="mb-4">
+        <label for="confirmpassword" class="form-label fs-5">Confirm Password:</label>
+        <input type="password" id="confirmpassword" class="form-control form-control-lg" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
+    </form>
+    <p class="login-prompt mt-4 text-center">
+      Already have an account? <a href="/login">Login Here</a>.
+    </p>
   </div>
-  <div>
-    <label for="email">Email:</label>
-    <input type="email" id="email" required />
-  </div>
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" required />
-  </div>
-  <div>
-    <label for="confirmpassword">ConfirmPassword:</label>
-    <input type="confirmpasswordpassword" id="confirmpasswordpassword" required />
-  </div>
-  <button type="submit">Register</button>
-</form>
-
+</div>

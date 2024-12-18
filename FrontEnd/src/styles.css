@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+/* Custom styles to make the form even more visually appealing */
+.container {
+    max-width: 100%;
+    padding: 20px;
+  }
+  
+  .col-md-6 {
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-weight: bold;
+  }
+  
+  form {
+    padding-top: 20px;
+  }
+  
