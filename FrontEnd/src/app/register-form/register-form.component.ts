@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';  // Import ReactiveFormsModule
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';  // Import necessary form-related modules
-import { CommonModule } from '@angular/common';  // Import CommonModule for *ngIf
+import { ReactiveFormsModule } from '@angular/forms';  // 导入 ReactiveFormsModule
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';  // 导入表单相关模块
+import { CommonModule } from '@angular/common';  // 导入 CommonModule 用于 *ngIf
+import { HttpClientModule, HttpClient } from '@angular/common/http';  // 导入 HttpClient 和 HttpClientModule
 
 @Component({
   selector: 'app-register-form',
-  standalone: true,  // This makes it a standalone component
-  imports: [ReactiveFormsModule, CommonModule],  // Import both ReactiveFormsModule and CommonModule
+  standalone: true,  // 使其成为独立组件
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],  // 导入 ReactiveFormsModule, CommonModule 和 HttpClientModule
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    // Using FormBuilder to create the form and add validation
+  constructor(private fb: FormBuilder, private http: HttpClient) {
+    // 使用 FormBuilder 创建表单并添加验证
     this.registerForm = this.fb.group(
       {
         username: ['', [Validators.required]],
@@ -26,23 +27,36 @@ export class RegisterFormComponent {
     );
   }
 
-  // Custom validator to compare password and confirm password
+  // 自定义验证器，比较密码和确认密码
   passwordMatchValidator(group: FormGroup) {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { notMatching: true };
   }
 
-  // Getter to simplify access to form controls
+  // 简化访问表单控件
   get f() {
     return this.registerForm.controls;
   }
 
-  // Handle form submission
+  // 处理表单提交
   onSubmit() {
     if (this.registerForm.invalid) {
       return;
     }
-    console.log('Form Submitted!', this.registerForm.value);
+
+    // 获取表单数据
+    const formData = this.registerForm.value;
+
+    // 发送 POST 请求到 Heroku 后端
+    this.http.post('https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/register', formData)
+      .subscribe(
+        response => {
+          console.log('Registration successful', response);
+        },
+        error => {
+          console.error('Registration failed', error);
+        }
+      );
   }
 }
