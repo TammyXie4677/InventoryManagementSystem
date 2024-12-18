@@ -1,20 +1,26 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
   <div class="col-md-6 col-lg-4">
     <h2 class="text-center mb-4 display-4">Login</h2>
-    <form>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-4">
-        <label for="username" class="form-label fs-5">Username:</label>
-        <input type="text" id="username" class="form-control form-control-lg" required />
+        <label for="email" class="form-label fs-5">Email:</label>
+        <input type="email" id="email" class="form-control form-control-lg" formControlName="email" />
+        <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger">
+          <div *ngIf="f['email'].errors?.['required']">Email is required.</div>
+          <div *ngIf="f['email'].errors?.['email']">Invalid email format.</div>
+        </div>
       </div>
       <div class="mb-4">
         <label for="password" class="form-label fs-5">Password:</label>
-        <input type="password" id="password" class="form-control form-control-lg" required />
+        <input type="password" id="password" class="form-control form-control-lg" formControlName="password" />
+        <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger">
+          <div *ngIf="f['password'].errors?.['required']">Password is required.</div>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+      <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="loginForm.invalid">Login</button>
     </form>
     <p class="register-prompt mt-4 text-center">
       If you don't have an account, Please <a href="/register">Register Here</a>.
     </p>
   </div>
 </div>
-
