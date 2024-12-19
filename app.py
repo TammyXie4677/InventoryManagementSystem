@@ -58,7 +58,7 @@ def register():
         return jsonify({"error": "Email already registered"}), 400
 
     # Create new user
-    hashed_password = generate_password_hash(password, method='sha256')
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
     new_user = User(username=username, email=email, password=hashed_password)
 
     # Add the new user to the database
