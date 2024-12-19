@@ -21,14 +21,21 @@ export class HeaderComponent {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const user = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-        this.isLoggedIn = true;
-        this.username = user.username;
-        this.cdr.detectChanges(); 
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1]));
+          this.isLoggedIn = true;
+          this.username = payload.username || ''; 
+        } else {
+          console.error('Invalid token format');
+          this.isLoggedIn = false;
+        }
       } catch (error) {
         console.error('Failed to parse token:', error);
         this.isLoggedIn = false;
       }
+    } else {
+      this.isLoggedIn = false;
     }
   }
 
