@@ -1,0 +1,10 @@
+<nav>
+    <ul>
+        <li *ngIf="isLoggedIn"><a routerLink="/products">Products</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/orders">Orders</a></li>
+        <li *ngIf="isLoggedIn">{{ userName }}</li>
+        <li *ngIf="isLoggedIn" (click)="logout()" style="cursor: pointer;">Logout</li>
+    </ul>
+</nav>
+  
+  

@@ -78,16 +78,10 @@ export default `<!doctype html>
   <header>
     <div class="logo-container">
       <a href="/">
-        <img src="/images/logo.jpg" alt="Logo" class="logo">
+        <img src="assets/images/logo.jpg" alt="Logo" class="logo">
       </a>      
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/products">Products</a></li>
-        <li><a href="/orders">Orders</a></li>
-      </ul>
-    </nav>
+    <app-nav></app-nav>
   </header>
 
   <!-- Main Content Section -->
@@ -101,7 +95,7 @@ export default `<!doctype html>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-STY54DAI.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-WOHCXGE3.js" type="module"></script></body>
 
 </html>
 `;
