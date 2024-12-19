@@ -47,7 +47,7 @@ export class LoginFormComponent {
 
           // Redirect to another page or perform other actions
           alert('Login successful! Redirecting...');
-          window.location.href = '/dashboard'; // Replace with your desired route
+          window.location.href = '/products'; 
         },
         (error) => {
           this.loading = false; // Hide loading spinner

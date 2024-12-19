@@ -29,63 +29,11 @@
       /* Ensure space for header and footer */
       background-color: #f8f9fa;
     }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #343a40;
-    }
-
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo {
-      height: 70px;
-    }
-
-    nav ul {
-      display: flex;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    nav ul li {
-      margin-left: 20px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: white;
-      font-size: 18px;
-      padding: 5px 10px;
-      transition: color 0.3s;
-    }
-
-    nav ul li a:hover {
-      color: #007bff;
-      /* Color on hover */
-    }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="logo-container">
-      <a href="/">
-        <img src="/images/logo.jpg" alt="Logo" class="logo">
-      </a>      
-    </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-      </ul>
-    </nav>
-  </header>
+  <app-header></app-header>
 
   <!-- Main Content Section -->
   <main class="main">

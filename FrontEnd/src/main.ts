@@ -6,10 +6,15 @@ import { AppComponent } from './app/app.component';
 import { RegisterFormComponent } from './app/register-form/register-form.component';
 import { LoginFormComponent } from './app/login-form/login-form.component';
 import { authInterceptor } from './app/auth.interceptor'; 
+import { ProductsComponent } from './app/products/products.component';
+import { OrdersComponent } from './app/orders/orders.component';
+import { HeaderComponent } from './app/header/header.component';
 
 const routes: Routes = [
   { path: 'register', component: RegisterFormComponent },
   { path: 'login', component: LoginFormComponent },
+  { path: 'products', component: ProductsComponent },
+  { path: 'orders', component: OrdersComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

@@ -1,0 +1,16 @@
+<header>
+    <div class="logo-container">
+        <a href="/">
+            <img src="/images/logo.jpg" alt="Logo" class="logo">
+        </a>
+    </div>
+    <nav>
+        <ul>
+            <li><a routerLink="/">Home</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/products">Products</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/orders">Orders</a></li>
+            <li *ngIf="isLoggedIn" class="username">Welcome, {{ username }}</li>
+            <li *ngIf="isLoggedIn"><button (click)="logout()">Logout</button></li>
+        </ul>
+    </nav>
+</header>
