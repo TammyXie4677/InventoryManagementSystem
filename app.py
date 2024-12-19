@@ -35,10 +35,6 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 # User registration endpoint
 @app.route('/register', methods=['POST'])
 def register():
