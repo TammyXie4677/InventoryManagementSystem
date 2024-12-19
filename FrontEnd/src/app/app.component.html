@@ -1,2 +1,8 @@
+<app-header *ngIf="!isLoginPage && !isRegisterPage"></app-header>
+<main class="main">
+  <router-outlet></router-outlet>
+</main>
+<footer>
+  <p>&copy; 2024 Inventory Management System. All rights reserved.</p>
+</footer>
 
-<router-outlet />

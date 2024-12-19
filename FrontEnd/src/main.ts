@@ -8,7 +8,6 @@ import { LoginFormComponent } from './app/login-form/login-form.component';
 import { authInterceptor } from './app/auth.interceptor'; 
 import { ProductsComponent } from './app/products/products.component';
 import { OrdersComponent } from './app/orders/orders.component';
-import { HeaderComponent } from './app/header/header.component';
 
 const routes: Routes = [
   { path: 'register', component: RegisterFormComponent },

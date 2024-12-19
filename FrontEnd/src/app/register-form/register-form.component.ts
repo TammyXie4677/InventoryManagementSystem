@@ -47,9 +47,12 @@ export class RegisterFormComponent {
       .subscribe(
         response => {
           console.log('Registration successful', response);
+          alert('Register successful! Redirecting...');
+          window.location.href = '/login'; 
         },
         error => {
           console.error('Registration failed', error);
+          alert('Registration failed: ' + (error?.error?.message || 'Unknown error occurred'));
         }
       );
   }

@@ -45,8 +45,7 @@ export class LoginFormComponent {
           // Store JWT in localStorage
           localStorage.setItem('token', response.access_token);
 
-          // Redirect to another page or perform other actions
-          alert('Login successful! Redirecting...');
+          // Redirect to another page 
           window.location.href = '/products'; 
         },
         (error) => {
