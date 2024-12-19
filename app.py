@@ -22,6 +22,7 @@ db = SQLAlchemy(app)
 
 # User model for PostgreSQL
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -33,6 +34,10 @@ class RegistrationForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # User registration endpoint
 @app.route('/register', methods=['POST'])
