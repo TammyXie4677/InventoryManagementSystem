@@ -37,38 +37,34 @@ class RegistrationForm(FlaskForm):
 # User registration endpoint
 @app.route('/register', methods=['POST'])
 def register():
-    form = RegistrationForm(request.form)
-    if form.validate_on_submit():
-        # Get data from the form
-        username = form.username.data
-        email = form.email.data
-        password = form.password.data
-        confirm_password = form.confirm_password.data
+    data = request.get_json()  # 从 JSON 请求中获取数据
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    confirm_password = data.get('confirmPassword')
 
-        # Ensure all fields are filled
-        if not username or not email or not password or not confirm_password:
-            return jsonify({"error": "All fields are required"}), 400
+    # Ensure all fields are filled
+    if not username or not email or not password or not confirm_password:
+        return jsonify({"error": "All fields are required"}), 400
 
-        # Compare password and confirm_password
-        if password != confirm_password:
-            return jsonify({"error": "Passwords do not match"}), 400
+    # Compare password and confirm_password
+    if password != confirm_password:
+        return jsonify({"error": "Passwords do not match"}), 400
 
-        # Check if user already exists
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
-            return jsonify({"error": "Email already registered"}), 400
+    # Check if user already exists
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"error": "Email already registered"}), 400
 
-        # Create new user
-        hashed_password = generate_password_hash(password, method='sha256')
-        new_user = User(username=username, email=email, password=hashed_password)
+    # Create new user
+    hashed_password = generate_password_hash(password, method='sha256')
+    new_user = User(username=username, email=email, password=hashed_password)
 
-        # Add the new user to the database
-        db.session.add(new_user)
-        db.session.commit()
+    # Add the new user to the database
+    db.session.add(new_user)
+    db.session.commit()
 
-        return jsonify({"message": "User registered successfully!"}), 201
-    else:
-        return jsonify({"error": form.errors}), 400
+    return jsonify({"message": "User registered successfully!"}), 201
 
 # User login endpoint
 @app.route('/login', methods=['POST'])
