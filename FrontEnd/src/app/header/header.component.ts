@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -13,16 +13,22 @@ export class HeaderComponent {
   isLoggedIn: boolean = false;
   username: string = '';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     this.checkLoginStatus();
   }
 
   checkLoginStatus() {
     const token = localStorage.getItem('token');
     if (token) {
-      const user = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-      this.isLoggedIn = true;
-      this.username = user.username;
+      try {
+        const user = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
+        this.isLoggedIn = true;
+        this.username = user.username;
+        this.cdr.detectChanges(); 
+      } catch (error) {
+        console.error('Failed to parse token:', error);
+        this.isLoggedIn = false;
+      }
     }
   }
 
