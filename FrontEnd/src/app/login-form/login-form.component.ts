@@ -3,8 +3,6 @@ import { ReactiveFormsModule } from '@angular/forms';  // Import ReactiveFormsMo
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';  // Import necessary form-related modules
 import { CommonModule } from '@angular/common';  // Import CommonModule for *ngIf
 import { HttpClient, HttpClientModule } from '@angular/common/http';  // Import HttpClient for HTTP requests
-import { Router } from '@angular/router';
-import { NavComponent } from '../nav/nav.component';  // Import NavComponent to update navigation state
 
 @Component({
   selector: 'app-login-form',
@@ -16,12 +14,7 @@ import { NavComponent } from '../nav/nav.component';  // Import NavComponent to 
 export class LoginFormComponent {
   loginForm: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router,
-    private navComponent: NavComponent // Reference to NavComponent to update login status
-  ) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
@@ -43,8 +36,7 @@ export class LoginFormComponent {
       .subscribe(
         (response: any) => {
           console.log('Login successful!', response);
-          this.navComponent.setLoginStatus(true, response.username); // Update navigation with login status and username
-          this.router.navigate(['/products']); // Redirect to Products page
+          // Handle successful login, e.g., redirect to dashboard or store user data
         },
         (error) => {
           if (error.status === 401) {
@@ -58,3 +50,4 @@ export class LoginFormComponent {
       );
   }
 }
+
