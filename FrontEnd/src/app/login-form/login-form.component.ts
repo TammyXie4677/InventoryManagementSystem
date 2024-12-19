@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';  // Import ReactiveFormsModule
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';  // Import necessary form-related modules
-import { CommonModule } from '@angular/common';  // Import CommonModule for *ngIf
-import { HttpClient, HttpClientModule } from '@angular/common/http';  // Import HttpClient for HTTP requests
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login-form',
-  standalone: true,  // Standalone component
-  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],  // Import ReactiveFormsModule, CommonModule, and HttpClientModule
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
 export class LoginFormComponent {
   loginForm: FormGroup;
+  loading: boolean = false; // Indicates loading state
+  errorMessage: string = ''; // Stores error messages
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.loginForm = this.fb.group({
@@ -30,21 +31,32 @@ export class LoginFormComponent {
       return;
     }
 
+    this.loading = true; // Show loading spinner
+    this.errorMessage = ''; // Clear previous errors
+
     const loginData = this.loginForm.value;
 
     this.http.post('https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/login', loginData)
       .subscribe(
         (response: any) => {
+          this.loading = false; // Hide loading spinner
           console.log('Login successful!', response);
-          // Handle successful login, e.g., redirect to dashboard or store user data
+
+          // Store JWT in localStorage
+          localStorage.setItem('token', response.access_token);
+
+          // Redirect to another page or perform other actions
+          alert('Login successful! Redirecting...');
+          window.location.href = '/dashboard'; // Replace with your desired route
         },
         (error) => {
+          this.loading = false; // Hide loading spinner
           if (error.status === 401) {
-            console.error('Invalid password');
+            this.errorMessage = 'Invalid password.';
           } else if (error.status === 404) {
-            console.error('Email not found');
+            this.errorMessage = 'Email not found.';
           } else {
-            console.error('Unexpected error:', error);
+            this.errorMessage = 'Unexpected error. Please try again later.';
           }
         }
       );

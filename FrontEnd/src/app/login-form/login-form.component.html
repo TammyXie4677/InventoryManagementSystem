@@ -2,6 +2,12 @@
   <div class="col-md-6 col-lg-4">
     <h2 class="text-center mb-4 display-4">Login</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Loading indicator -->
+      <div *ngIf="loading" class="loading">Logging in...</div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
       <div class="mb-4">
         <label for="email" class="form-label fs-5">Email:</label>
         <input type="email" id="email" class="form-control form-control-lg" formControlName="email" />

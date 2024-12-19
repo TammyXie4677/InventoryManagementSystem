@@ -6,6 +6,7 @@ from wtforms import StringField, PasswordField, EmailField
 from wtforms.validators import DataRequired, EqualTo, Email
 from flask_compress import Compress
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import os
 
 app = Flask(__name__, static_folder='static/browser')
@@ -14,11 +15,13 @@ app = Flask(__name__, static_folder='static/browser')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///default.db').replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your_jwt_secret_key')  # 用于生成 JWT 的密钥
 
 # Extensions
 Compress(app)
 CORS(app)
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
 
 # User model for PostgreSQL
 class User(db.Model):
@@ -87,7 +90,17 @@ def login():
     if not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid password"}), 401
 
-    return jsonify({"message": "Login successful!", "username": user.username}), 200
+    # Generate JWT
+    access_token = create_access_token(identity={"email": user.email, "username": user.username})
+
+    return jsonify({"message": "Login successful!", "access_token": access_token}), 200
+
+# Protected route example
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()  # 获取当前用户信息（通过 JWT）
+    return jsonify({"message": "Access granted!", "user": current_user}), 200
 
 # Serve the Angular application (index.html)
 @app.route('/')
