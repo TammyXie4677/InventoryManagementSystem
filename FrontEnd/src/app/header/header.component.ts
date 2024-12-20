@@ -22,22 +22,32 @@ export class HeaderComponent {
     if (token) {
       try {
         const parts = token.split('.');
-        if (parts.length === 3) {
-          const payload = JSON.parse(atob(parts[1]));
+        if (parts.length !== 3) {
+          throw new Error('Invalid token format');
+        }
+  
+        const payload = JSON.parse(atob(parts[1])); // Decode JWT payload
+        console.log('Decoded Payload:', payload);
+  
+        // 确保 sub 和 username 存在
+        if (payload.sub && payload.sub.username) {
           this.isLoggedIn = true;
-          this.username = payload.username || ''; 
+          this.username = payload.sub.username; // 从 sub 对象中获取 username
         } else {
-          console.error('Invalid token format');
           this.isLoggedIn = false;
+          this.username = 'Guest';
         }
       } catch (error) {
         console.error('Failed to parse token:', error);
         this.isLoggedIn = false;
+        this.username = '';
       }
     } else {
+      console.log('No token found in localStorage');
       this.isLoggedIn = false;
+      this.username = '';
     }
-  }
+  }  
 
   logout() {
     localStorage.removeItem('token');
