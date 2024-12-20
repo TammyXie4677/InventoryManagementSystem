@@ -67,7 +67,7 @@ export class ProductsComponent implements OnInit {
       return;
     }
 
-    this.loading = true; // 开始加载
+    this.loading = true; 
     this.http
       .get<any[]>(`https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products?email=${this.email}`)
       .subscribe(
@@ -82,4 +82,32 @@ export class ProductsComponent implements OnInit {
         }
       );
   }
+
+  createProduct(productData: { name: string; description: string; price: number; quantity: number }) {
+    if (!this.email) {
+      console.error('Cannot create product: email is not available');
+      return;
+    }
+  
+    const payload = {
+      ...productData,
+      email: this.email, 
+    };
+  
+    this.loading = true; 
+    this.http
+      .post<any>('https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products', payload)
+      .subscribe(
+        (data) => {
+          console.log('Product created:', data);
+          this.products.push(data.product); 
+          this.loading = false;
+        },
+        (error) => {
+          console.error('Error creating product:', error);
+          this.errorMessage = 'Failed to create product. Please check your input.';
+          this.loading = false; 
+        }
+      );
+  }  
 }

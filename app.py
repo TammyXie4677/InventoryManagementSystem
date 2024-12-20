@@ -125,6 +125,54 @@ def get_all_products():
         'quantity': p.quantity
     } for p in products]), 200
 
+@app.route('/api/products', methods=['POST'])
+def create_products():
+    data = request.get_json()  
+    email = data.get('email')
+    username = data.get('username')
+
+    if not email and not username:
+        return jsonify({"error": "Email or username is required"}), 400
+
+    user = None
+    if email:
+        user = User.query.filter_by(email=email).first()
+    elif username:
+        user = User.query.filter_by(username=username).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    name = data.get('name')
+    description = data.get('description', '')
+    price = data.get('price')
+    quantity = data.get('quantity', 0)
+
+    if not name or price is None:
+        return jsonify({"error": "Product name and price are required"}), 400
+
+    new_product = Product(
+        name=name,
+        description=description,
+        price=price,
+        quantity=quantity,
+        user_id=user.id
+    )
+
+    db.session.add(new_product)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Product created successfully",
+        "product": {
+            "id": new_product.id,
+            "name": new_product.name,
+            "description": new_product.description,
+            "price": float(new_product.price),
+            "quantity": new_product.quantity
+        }
+    }), 201
+
 # Protected route example
 @app.route('/protected', methods=['GET'])
 @jwt_required()

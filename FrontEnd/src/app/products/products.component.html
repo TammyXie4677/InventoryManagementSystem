@@ -9,6 +9,18 @@
       <span>Quantity: {{ product.quantity }}</span>
     </li>
   </ul>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <h2>Create New Product</h2>
+  <form (submit)="createProduct({ name: productName.value, description: productDescription.value, price: +productPrice.value, 
+    quantity: +productQuantity.value }); $event.preventDefault()">
+    <input #productName type="text" placeholder="Product Name" required />
+    <input #productDescription type="text" placeholder="Description" />
+    <input #productPrice type="number" placeholder="Price" required />
+    <input #productQuantity type="number" placeholder="Quantity" />
+    <button type="submit">Create Product</button>
+  </form>
 </div>
 
 <ng-template #notLoggedIn>
