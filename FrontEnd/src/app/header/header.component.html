@@ -6,17 +6,8 @@
     </div>
     <nav>
         <ul>
-            <li *ngIf="isLoggedIn"><a routerLink="/products">Products</a></li>
-            <li *ngIf="isLoggedIn"><a routerLink="/orders">Orders</a></li>
-            <li *ngIf="isLoggedIn" class="username dropdown">
-                <a class="dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
-                    style="cursor: pointer;">
-                    Welcome, {{ username }}
-                </a>
-                <ul class="dropdown-menu hidden" aria-labelledby="dropdownMenuButton">
-                    <li><button class="dropdown-item" (click)="logout()">Logout</button></li>
-                </ul>
-            </li>
+            <li *ngIf="isLoggedIn" class="username">Welcome, {{ username || 'Guest' }}</li>
+            <li *ngIf="isLoggedIn"><button (click)="logout()">Logout</button></li>
         </ul>
     </nav>
 </header>
