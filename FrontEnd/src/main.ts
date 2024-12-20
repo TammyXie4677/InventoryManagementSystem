@@ -10,7 +10,16 @@ import { ProductsComponent } from './app/products/products.component';
 import { OrdersComponent } from './app/orders/orders.component';
 
 const routes: Routes = [
-  { path: 'register', component: RegisterFormComponent },
+  {
+    path: 'orders',
+    component: OrdersComponent,
+    resolve: {
+      debug: () => {
+        console.log('Navigating to OrdersComponent');
+        return true;
+      },
+    },
+  },
   { path: 'login', component: LoginFormComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'orders', component: OrdersComponent },
