@@ -13,8 +13,7 @@
                     style="cursor: pointer;">
                     Welcome, {{ username }}
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+                <ul class="dropdown-menu hidden" aria-labelledby="dropdownMenuButton">
                     <li><button class="dropdown-item" (click)="logout()">Logout</button></li>
                 </ul>
             </li>
