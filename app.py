@@ -184,6 +184,33 @@ def delete_product(product_id):
 
     return jsonify({"message": "Product deleted successfully"}), 200
 
+@app.route('/api/products/<int:product_id>', methods=['PUT'])
+def edit_product(product_id):
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    data = request.get_json()
+
+    # 更新产品的字段
+    product.name = data.get('name', product.name)
+    product.description = data.get('description', product.description)
+    product.price = data.get('price', product.price)
+    product.quantity = data.get('quantity', product.quantity)
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Product updated successfully",
+        "product": {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "quantity": product.quantity
+        }
+    }), 200
+
 # Protected route example
 @app.route('/protected', methods=['GET'])
 @jwt_required()

@@ -17,25 +17,42 @@
         <td><strong>{{ product.name }}</strong></td>
         <td>${{ product.price }}</td>
         <td>{{ product.description }}</td>
-        <td>{{ product.quantity }}</td><td>
+        <td>{{ product.quantity }}</td>
+        <td>
           <button type="button" class="btn-delete" (click)="deleteProduct(product.id)">Delete</button>
+          <button type="button" class="btn-edit" (click)="setEditingProduct(product)">Edit</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <form (submit)="createProduct({ name: productName.value, description: productDescription.value, price: +productPrice.value, 
-    quantity: +productQuantity.value }); $event.preventDefault()">
-    <input #productName type="text" placeholder="Product Name" required />
-    <input #productDescription type="text" placeholder="Description" />
-    <input #productPrice type="number" placeholder="Price" required />
-    <input #productQuantity type="number" placeholder="Quantity" />
+  <form *ngIf="editingProduct; else createForm" (submit)="updateProduct(); $event.preventDefault()">
+    <h3>Edit Product</h3>
+    <input [(ngModel)]="editingProduct.name" name="name" type="text" placeholder="Product Name" required />
+    <input [(ngModel)]="editingProduct.description" name="description" type="text" placeholder="Description" />
+    <input [(ngModel)]="editingProduct.price" name="price" type="number" placeholder="Price" required />
+    <input [(ngModel)]="editingProduct.quantity" name="quantity" type="number" placeholder="Quantity" />
     <div class="form-actions">
-      <button type="submit" class="btn-create">Create Product</button>
-      <button type="Submit" class="btn-update">Update Product</button>
+      <button type="submit" class="btn-update">Update Product</button>
+      <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
     </div>
   </form>
+
+  <ng-template #createForm>
+    <h3>Create Product</h3>
+    <form (submit)="createProduct({ name: productName.value, description: productDescription.value, price: +productPrice.value, 
+      quantity: +productQuantity.value }); $event.preventDefault()">
+      <input #productName type="text" placeholder="Product Name" required />
+      <input #productDescription type="text" placeholder="Description" />
+      <input #productPrice type="number" placeholder="Price" required />
+      <input #productQuantity type="number" placeholder="Quantity" />
+      <div class="form-actions">
+        <button type="submit" class="btn-create">Create Product</button>
+      </div>
+    </form>
+  </ng-template>
 </div>
 
 <ng-template #notLoggedIn>
   <p>You are not logged in. Please <a [routerLink]="['/login']">log in</a>.</p>
 </ng-template>
+

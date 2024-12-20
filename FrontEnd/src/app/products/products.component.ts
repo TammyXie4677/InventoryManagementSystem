@@ -3,11 +3,12 @@ import { PLATFORM_ID, Inject, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
@@ -143,4 +144,41 @@ export class ProductsComponent implements OnInit {
         }
       );
   }  
+
+  editingProduct: any = null;
+
+setEditingProduct(product: any) {
+  this.editingProduct = { ...product }; 
+}
+
+cancelEdit() {
+  this.editingProduct = null;
+}
+
+updateProduct() {
+  if (!this.editingProduct) return;
+
+  const payload = { ...this.editingProduct, email: this.email };
+  this.loading = true;
+
+  this.http
+    .put<any>(
+      `https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products/${this.editingProduct.id}`,
+      payload
+    )
+    .subscribe(
+      (data) => {
+        console.log('Product updated:', data);
+        const index = this.products.findIndex((p) => p.id === this.editingProduct.id);
+        if (index > -1) this.products[index] = data.product; 
+        this.editingProduct = null; 
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error updating product:', error);
+        this.errorMessage = 'Failed to update product. Please try again.';
+        this.loading = false;
+      }
+    );
+}
 }
