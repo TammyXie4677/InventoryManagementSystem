@@ -184,43 +184,6 @@ def delete_product(product_id):
 
     return jsonify({"message": "Product deleted successfully"}), 200
 
-@app.route('/api/products/<int:product_id>', methods=['PUT'])
-def update_product(product_id):
-    data = request.get_json()
-    name = data.get('name')
-    description = data.get('description', '')
-    price = data.get('price')
-    quantity = data.get('quantity')
-
-    if not name:
-        return jsonify({"error": "Product name is required"}), 400
-    if price is None or price < 0:
-        return jsonify({"error": "Product price must be a positive number"}), 400
-    if quantity is None or quantity < 0:
-        return jsonify({"error": "Product quantity cannot be negative"}), 400
-
-    product = Product.query.get(product_id)
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    product.name = name
-    product.description = description
-    product.price = price
-    product.quantity = quantity
-
-    db.session.commit()
-
-    return jsonify({
-        "message": "Product updated successfully",
-        "product": {
-            "id": product.id,
-            "name": product.name,
-            "description": product.description,
-            "price": float(product.price),
-            "quantity": product.quantity
-        }
-    }), 200
-
 # Protected route example
 @app.route('/protected', methods=['GET'])
 @jwt_required()
