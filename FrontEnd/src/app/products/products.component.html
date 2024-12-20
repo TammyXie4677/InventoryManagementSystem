@@ -30,8 +30,8 @@
     <input #productPrice type="number" placeholder="Price" required />
     <input #productQuantity type="number" placeholder="Quantity" />
     <div class="form-actions">
-      <button type="submit" class="btn-create">Create Product</button>
-      <button type="Submit" class="btn-update">Update Product</button>
+      <button *ngIf="!isEditing" type="submit" class="btn-create">Create Product</button>
+      <button *ngIf="isEditing" type="submit" class="btn-update">Save Changes</button>
     </div>
   </form>
 </div>

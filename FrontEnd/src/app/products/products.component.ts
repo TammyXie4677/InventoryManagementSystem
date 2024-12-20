@@ -15,6 +15,8 @@ export class ProductsComponent implements OnInit {
   isLoggedIn: boolean = false;
   email: string = '';
   products: any[] = [];
+  currentProduct: any = { name: '', description: '', price: 0, quantity: 0 }; 
+  isEditing: boolean = false; 
   loading: boolean = false;
   errorMessage: string = '';
 
@@ -47,7 +49,6 @@ export class ProductsComponent implements OnInit {
         const payload = JSON.parse(atob(parts[1])); // Decode JWT payload
         console.log('Decoded Payload:', payload);
 
-        // If the token is valid, set the user as logged in
         this.isLoggedIn = true;
         this.email = payload.sub.email || ''; 
       } catch (error) {
@@ -127,7 +128,7 @@ export class ProductsComponent implements OnInit {
       .subscribe(
         () => {
           console.log(`Product with ID ${productId} deleted successfully.`);
-          this.products = this.products.filter((product) => product.id !== productId); // 从本地列表中移除已删除的产品
+          this.products = this.products.filter((product) => product.id !== productId); 
           this.loading = false; 
         },
         (error) => {
@@ -137,4 +138,48 @@ export class ProductsComponent implements OnInit {
         }
       );
   }  
+
+  editProduct(product: any): void {
+    this.currentProduct = { ...product }; 
+    this.isEditing = true; 
+  }
+
+  onSubmit(): void {
+    if (this.isEditing) {
+      this.updateProduct();
+    } else {
+      this.createProduct(this.currentProduct);
+    }
+  }
+
+  updateProduct(): void {
+    if (!this.currentProduct.id) {
+      console.error('Invalid product ID for update.');
+      return;
+    }
+
+    this.loading = true;
+    this.http
+      .put<any>(
+        `https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products/${this.currentProduct.id}`,
+        this.currentProduct
+      )
+      .subscribe(
+        (data) => {
+          console.log('Product updated:', data);
+          const index = this.products.findIndex((p) => p.id === this.currentProduct.id);
+          if (index !== -1) {
+            this.products[index] = { ...data.product };
+          }
+          this.isEditing = false; 
+          this.currentProduct = { name: '', description: '', price: 0, quantity: 0 }; 
+          this.loading = false;
+        },
+        (error) => {
+          console.error('Error updating product:', error);
+          this.errorMessage = 'Failed to update product. Please try again later.';
+          this.loading = false;
+        }
+      );
+  }
 }
