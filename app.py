@@ -95,12 +95,16 @@ def login():
 
     return jsonify({"message": "Login successful!", "access_token": access_token}), 200
 
-# Protected route example
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()  # 获取当前用户信息（通过 JWT）
-    return jsonify({"message": "Access granted!", "user": current_user}), 200
+# Products endpoint
+@app.route('/products', methods=['GET'])
+@jwt_required()  # Require authentication
+def products():
+    # Example response - replace with actual logic
+    current_user = get_jwt_identity()  # Get current user from the JWT
+    return jsonify({
+        "message": "Welcome to the products page!",
+        "user": current_user
+    }), 200
 
 # Serve the Angular application (index.html)
 @app.route('/')
