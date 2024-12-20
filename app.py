@@ -99,7 +99,7 @@ def login():
 @app.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
-    current_user = get_jwt_identity()  # 获取当前用户信息（通过 JWT）
+    current_user = get_jwt_identity()  
     return jsonify({"message": "Access granted!", "user": current_user}), 200
 
 # Serve the Angular application (index.html)
