@@ -37,7 +37,7 @@ export default `<!doctype html>
   <app-root></app-root>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-GSWH5RHH.js" type="module"></script></body>
+<script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-WVCVEPL5.js" type="module"></script></body>
 
 </html>
 
