@@ -173,6 +173,17 @@ def create_products():
         }
     }), 201
 
+@app.route('/api/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"message": "Product deleted successfully"}), 200
+
 # Protected route example
 @app.route('/protected', methods=['GET'])
 @jwt_required()

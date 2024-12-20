@@ -110,4 +110,31 @@ export class ProductsComponent implements OnInit {
         }
       );
   }  
+
+  deleteProduct(productId: number): void {
+    if (!productId) {
+      console.error('Invalid product ID');
+      return;
+    }
+  
+    if (!confirm('Are you sure you want to delete this product?')) {
+      return; 
+    }
+  
+    this.loading = true; 
+    this.http
+      .delete(`https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products/${productId}`)
+      .subscribe(
+        () => {
+          console.log(`Product with ID ${productId} deleted successfully.`);
+          this.products = this.products.filter((product) => product.id !== productId); // 从本地列表中移除已删除的产品
+          this.loading = false; 
+        },
+        (error) => {
+          console.error('Error deleting product:', error);
+          this.errorMessage = 'Failed to delete product. Please try again later.';
+          this.loading = false; 
+        }
+      );
+  }  
 }
