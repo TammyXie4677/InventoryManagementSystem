@@ -2,17 +2,25 @@
   <h1>Product List</h1>
   <div *ngIf="loading">Loading products...</div>
   <div *ngIf="errorMessage">{{ errorMessage }}</div>
-  <ul *ngIf="!loading && !errorMessage">
-    <li *ngFor="let product of products">
-      <strong>{{ product.name }}</strong> - ${{ product.price }}
-      <p>{{ product.description }}</p>
-      <span>Quantity: {{ product.quantity }}</span>
-    </li>
-  </ul>
 
-  <div *ngIf="loading">Loading...</div>
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
-  <h2>Create New Product</h2>
+  <table *ngIf="!loading && !errorMessage">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td><strong>{{ product.name }}</strong></td>
+        <td>${{ product.price }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.quantity }}</td>
+      </tr>
+    </tbody>
+  </table>
   <form (submit)="createProduct({ name: productName.value, description: productDescription.value, price: +productPrice.value, 
     quantity: +productQuantity.value }); $event.preventDefault()">
     <input #productName type="text" placeholder="Product Name" required />
@@ -26,8 +34,3 @@
 <ng-template #notLoggedIn>
   <p>You are not logged in. Please <a [routerLink]="['/login']">log in</a>.</p>
 </ng-template>
-
-
-
-
-  
