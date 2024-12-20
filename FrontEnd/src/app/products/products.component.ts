@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, Inject, Component } from '@angular/core';
+import { PLATFORM_ID, Inject, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -10,19 +11,25 @@ import { RouterModule } from '@angular/router';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   isLoggedIn: boolean = false;
-  products = [
-    { id: 1, name: 'Product A', price: 100 },
-    { id: 2, name: 'Product B', price: 200 },
-    { id: 3, name: 'Product C', price: 300 },
-  ];
+  products: any[] = []; 
+  userId: number | null = null;; 
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
+    private http: HttpClient 
+  ) {
     if (isPlatformBrowser(this.platformId)) {
       this.checkLoginStatus();
     } else {
       this.isLoggedIn = false;
+    }
+  }
+
+  ngOnInit(): void {
+    if (this.isLoggedIn) {
+      this.fetchProducts();
     }
   }
 
@@ -40,6 +47,7 @@ export class ProductsComponent {
 
         // If the token is valid, set the user as logged in
         this.isLoggedIn = true;
+        this.userId = payload.sub.id; 
       } catch (error) {
         console.error('Failed to parse token:', error);
         this.isLoggedIn = false;
@@ -48,5 +56,18 @@ export class ProductsComponent {
       console.log('No token found in localStorage');
       this.isLoggedIn = false;
     }
+  }
+
+  fetchProducts() {
+    this.http
+      .get<any[]>(`https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products?user_id=${this.userId}`)
+      .subscribe(
+        (data) => {
+          this.products = data;
+        },
+        (error) => {
+          console.error('Error fetching products:', error);
+        }
+      );
   }
 }

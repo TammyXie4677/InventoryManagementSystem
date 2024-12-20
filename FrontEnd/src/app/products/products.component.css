@@ -1,0 +1,32 @@
+h1 {
+    text-align: center;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  strong {
+    display: block;
+    font-size: 1.2em;
+    color: #333;
+  }
+  
+  p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  span {
+    font-size: 0.9em;
+    color: #777;
+  }
+  

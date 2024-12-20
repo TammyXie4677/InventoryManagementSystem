@@ -44,13 +44,6 @@ class Product(db.Model):
     # Establish relationship with the User table
     user = db.relationship('User', backref=db.backref('products', lazy=True, cascade="all, delete-orphan"))
 
-# User Registration Form
-class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = EmailField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-
 # User registration endpoint
 @app.route('/register', methods=['POST'])
 def register():
@@ -108,109 +101,20 @@ def login():
 
     return jsonify({"message": "Login successful!", "access_token": access_token}), 200
 
-# User create products endpoint
-@app.route('/products', methods=['POST'])
-@jwt_required()
-def create_product():
-    current_user = get_jwt_identity()  # Get current user identity from JWT
-    user = User.query.filter_by(email=current_user['email']).first()
+@app.route('/api/products', methods=['GET'])
+def get_all_products():
+    user_id = request.args.get('user_id', type=int)
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+    products = Product.query.filter_by(user_id=user_id).all()
+    return jsonify([{
+        'id': p.id,
+        'name': p.name,
+        'description': p.description,
+        'price': float(p.price),
+        'quantity': p.quantity
+    } for p in products]), 200
 
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    data = request.get_json()
-    if not data.get('name') or not data.get('price'):
-        return jsonify({"error": "Name and price are required"}), 400
-
-    new_product = Product(
-        name=data['name'],
-        description=data.get('description'),
-        price=data['price'],
-        quantity=data.get('quantity', 0),
-        user_id=user.id
-    )
-
-    db.session.add(new_product)
-    db.session.commit()
-
-    return jsonify({"message": "Product created successfully!"}), 201
-
-# User view products endpoint
-@app.route('/products', methods=['GET'])
-@jwt_required()
-def get_products():
-    current_user = get_jwt_identity()  # Get current user identity from JWT
-    user = User.query.filter_by(email=current_user['email']).first()
-
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    products = Product.query.filter_by(user_id=user.id).all()
-    return jsonify([
-        {
-            "id": product.id,
-            "name": product.name,
-            "description": product.description,
-            "price": float(product.price),
-            "quantity": product.quantity
-        } for product in products
-    ]), 200
-
-# User search a Single Product by ID endpoint
-@app.route('/products/<int:product_id>', methods=['GET'])
-@jwt_required()
-def get_product(product_id):
-    current_user = get_jwt_identity()  # Get current user identity from JWT
-    user = User.query.filter_by(email=current_user['email']).first()
-
-    product = Product.query.filter_by(id=product_id, user_id=user.id).first()
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    return jsonify({
-        "id": product.id,
-        "name": product.name,
-        "description": product.description,
-        "price": float(product.price),
-        "quantity": product.quantity
-    }), 200
-
-# User update a Single Product by ID endpoint
-@app.route('/products/<int:product_id>', methods=['PUT'])
-@jwt_required()
-def update_product(product_id):
-    current_user = get_jwt_identity()  # Get current user identity from JWT
-    user = User.query.filter_by(email=current_user['email']).first()
-
-    product = Product.query.filter_by(id=product_id, user_id=user.id).first()
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    data = request.get_json()
-    product.name = data.get('name', product.name)
-    product.description = data.get('description', product.description)
-    product.price = data.get('price', product.price)
-    product.quantity = data.get('quantity', product.quantity)
-
-    db.session.commit()
-
-    return jsonify({"message": "Product updated successfully!"}), 200
-
-# User delete a Single Product by ID endpoint
-@app.route('/products/<int:product_id>', methods=['DELETE'])
-@jwt_required()
-def delete_product(product_id):
-    current_user = get_jwt_identity()  # Get current user identity from JWT
-    user = User.query.filter_by(email=current_user['email']).first()
-
-    product = Product.query.filter_by(id=product_id, user_id=user.id).first()
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    db.session.delete(product)
-    db.session.commit()
-
-    return jsonify({"message": "Product deleted successfully!"}), 200
 
 # Protected route example
 @app.route('/protected', methods=['GET'])

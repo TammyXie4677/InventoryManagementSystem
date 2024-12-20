@@ -2,13 +2,17 @@
   <h1>Product List</h1>
   <ul>
     <li *ngFor="let product of products">
-      {{ product.name }} - ${{ product.price }}
+      <strong>{{ product.name }}</strong> - ${{ product.price }}
+      <p>{{ product.description }}</p>
+      <span>Quantity: {{ product.quantity }}</span>
     </li>
   </ul>
 </div>
+
 <ng-template #notLoggedIn>
   <p>You are not logged in. Please <a [routerLink]="['/login']">log in</a>.</p>
 </ng-template>
+
 
 
   
