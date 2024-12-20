@@ -26,6 +26,7 @@ export class ProductsComponent {
     private http: HttpClient,
     private fb: FormBuilder
   ) {
+    // Initialize the form
     this.productForm = this.fb.group({
       name: [''],
       description: [''],
@@ -33,6 +34,7 @@ export class ProductsComponent {
       quantity: [''],
     });
 
+    // Check platform and login status
     if (isPlatformBrowser(this.platformId)) {
       this.checkLoginStatus();
     } else {
@@ -40,7 +42,8 @@ export class ProductsComponent {
     }
   }
 
-  checkLoginStatus() {
+  // Check if the user is logged in
+  checkLoginStatus(): void {
     this.token = localStorage.getItem('token');
     this.isLoggedIn = !!this.token;
 
@@ -49,7 +52,13 @@ export class ProductsComponent {
     }
   }
 
-  private getAuthHeaders() {
+  // Generate headers with the authorization token
+  private getAuthHeaders(): { headers: HttpHeaders } {
+    if (!this.token) {
+      console.error('Token is not available');
+      return { headers: new HttpHeaders() };
+    }
+
     return {
       headers: new HttpHeaders({
         Authorization: `Bearer ${this.token}`,
@@ -57,8 +66,10 @@ export class ProductsComponent {
     };
   }
 
+  // Load the list of products
   loadProducts(): void {
-    this.http.get<any[]>(this.apiUrl, this.getAuthHeaders()).subscribe({
+    const headers = this.getAuthHeaders();
+    this.http.get<any[]>(this.apiUrl, headers).subscribe({
       next: (data) => {
         this.products = data;
       },
@@ -68,9 +79,12 @@ export class ProductsComponent {
     });
   }
 
+  // Add a new product
   addProduct(): void {
     const productData = this.productForm.value;
-    this.http.post(this.apiUrl, productData, this.getAuthHeaders()).subscribe({
+    const headers = this.getAuthHeaders();
+
+    this.http.post(this.apiUrl, productData, headers).subscribe({
       next: () => {
         this.loadProducts();
         this.productForm.reset();
@@ -81,15 +95,19 @@ export class ProductsComponent {
     });
   }
 
+  // Edit an existing product
   editProduct(product: any): void {
     this.editingProductId = product.id;
     this.productForm.patchValue(product);
   }
 
+  // Update an existing product
   updateProduct(): void {
     const productData = this.productForm.value;
+    const headers = this.getAuthHeaders();
     const url = `${this.apiUrl}/${this.editingProductId}`;
-    this.http.put(url, productData, this.getAuthHeaders()).subscribe({
+
+    this.http.put(url, productData, headers).subscribe({
       next: () => {
         this.loadProducts();
         this.editingProductId = null;
@@ -101,9 +119,12 @@ export class ProductsComponent {
     });
   }
 
+  // Delete a product
   deleteProduct(productId: number): void {
+    const headers = this.getAuthHeaders();
     const url = `${this.apiUrl}/${productId}`;
-    this.http.delete(url, this.getAuthHeaders()).subscribe({
+
+    this.http.delete(url, headers).subscribe({
       next: () => {
         this.loadProducts();
       },
