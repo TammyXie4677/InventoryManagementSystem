@@ -103,10 +103,20 @@ def login():
 
 @app.route('/api/products', methods=['GET'])
 def get_all_products():
-    user_id = request.args.get('user_id', type=int)
-    if not user_id:
-        return jsonify({"error": "User ID is required"}), 400
-    products = Product.query.filter_by(user_id=user_id).all()
+    email = request.args.get('email')
+    username = request.args.get('username')
+
+    if not email and not username:
+        return jsonify({"error": "Email or username is required"}), 400
+
+    # Combine query logic for email or username
+    user = User.query.filter((User.email == email) | (User.username == username)).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Fetch products by user_id
+    products = Product.query.filter_by(user_id=user.id).all()
     return jsonify([{
         'id': p.id,
         'name': p.name,
@@ -114,7 +124,6 @@ def get_all_products():
         'price': float(p.price),
         'quantity': p.quantity
     } for p in products]), 200
-
 
 # Protected route example
 @app.route('/protected', methods=['GET'])

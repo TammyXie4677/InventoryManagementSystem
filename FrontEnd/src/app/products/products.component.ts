@@ -13,12 +13,14 @@ import { RouterModule } from '@angular/router';
 })
 export class ProductsComponent implements OnInit {
   isLoggedIn: boolean = false;
-  products: any[] = []; 
-  userId: number | null = null;; 
+  email: string = '';
+  products: any[] = [];
+  loading: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
-    private http: HttpClient 
+    private http: HttpClient
   ) {
     if (isPlatformBrowser(this.platformId)) {
       this.checkLoginStatus();
@@ -47,7 +49,7 @@ export class ProductsComponent implements OnInit {
 
         // If the token is valid, set the user as logged in
         this.isLoggedIn = true;
-        this.userId = payload.sub.id; 
+        this.email = payload.sub.email || ''; 
       } catch (error) {
         console.error('Failed to parse token:', error);
         this.isLoggedIn = false;
@@ -59,14 +61,24 @@ export class ProductsComponent implements OnInit {
   }
 
   fetchProducts() {
+    if (!this.email) {
+      this.errorMessage = 'Cannot fetch products: email is not available';
+      console.error(this.errorMessage);
+      return;
+    }
+
+    this.loading = true; // 开始加载
     this.http
-      .get<any[]>(`https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products?user_id=${this.userId}`)
+      .get<any[]>(`https://inventorymanagementsystem-36d14bdeb358.herokuapp.com/api/products?email=${this.email}`)
       .subscribe(
         (data) => {
           this.products = data;
+          this.loading = false; 
         },
         (error) => {
           console.error('Error fetching products:', error);
+          this.errorMessage = 'Failed to fetch products. Please try again later.';
+          this.loading = false; 
         }
       );
   }

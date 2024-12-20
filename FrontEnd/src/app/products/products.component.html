@@ -1,6 +1,8 @@
 <div *ngIf="isLoggedIn; else notLoggedIn">
   <h1>Product List</h1>
-  <ul>
+  <div *ngIf="loading">Loading products...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <ul *ngIf="!loading && !errorMessage">
     <li *ngFor="let product of products">
       <strong>{{ product.name }}</strong> - ${{ product.price }}
       <p>{{ product.description }}</p>
@@ -12,6 +14,7 @@
 <ng-template #notLoggedIn>
   <p>You are not logged in. Please <a [routerLink]="['/login']">log in</a>.</p>
 </ng-template>
+
 
 
 
