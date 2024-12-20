@@ -102,7 +102,13 @@ export class ProductsComponent implements OnInit {
           console.log('Product created:', data);
           this.products.push(data.product); 
           this.loading = false;
-        },
+
+        // Reset productData fields
+        productData.name = '';
+        productData.description = '';
+        productData.price = 0; 
+        productData.quantity = 0; 
+      },
         (error) => {
           console.error('Error creating product:', error);
           this.errorMessage = 'Failed to create product. Please check your input.';
