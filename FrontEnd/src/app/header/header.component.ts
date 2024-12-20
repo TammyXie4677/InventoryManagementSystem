@@ -29,13 +29,12 @@ export class HeaderComponent {
         const payload = JSON.parse(atob(parts[1])); // Decode JWT payload
         console.log('Decoded Payload:', payload);
   
-        // 确保 sub 和 username 存在
         if (payload.sub && payload.sub.username) {
           this.isLoggedIn = true;
-          this.username = payload.sub.username; // 从 sub 对象中获取 username
+          this.username = payload.sub.username; 
         } else {
           this.isLoggedIn = false;
-          this.username = 'Guest';
+          this.username = '';
         }
       } catch (error) {
         console.error('Failed to parse token:', error);
