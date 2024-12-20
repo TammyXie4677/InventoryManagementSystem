@@ -1,12 +1,11 @@
 <div *ngIf="isLoggedIn; else notLoggedIn">
-  <h1>Product List</h1>
   <div *ngIf="loading">Loading products...</div>
   <div *ngIf="errorMessage">{{ errorMessage }}</div>
 
   <table *ngIf="!loading && !errorMessage">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Products Name</th>
         <th>Price</th>
         <th>Description</th>
         <th>Quantity</th>
@@ -19,7 +18,7 @@
         <td>${{ product.price }}</td>
         <td>{{ product.description }}</td>
         <td>{{ product.quantity }}</td>
-        <td><button>Delete</button></td>
+        <td><button type="Submit" class="btn-delete">Delete</button></td>
       </tr>
     </tbody>
   </table>
@@ -29,7 +28,10 @@
     <input #productDescription type="text" placeholder="Description" />
     <input #productPrice type="number" placeholder="Price" required />
     <input #productQuantity type="number" placeholder="Quantity" />
-    <button type="submit">Create Product</button>
+    <div class="form-actions">
+      <button type="submit" class="btn-create">Create Product</button>
+      <button type="Submit" class="btn-update">Update Product</button>
+    </div>
   </form>
 </div>
 
