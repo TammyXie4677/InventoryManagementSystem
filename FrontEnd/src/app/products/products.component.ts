@@ -1,52 +1,97 @@
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, Inject, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
-export class ProductsComponent {
-  isLoggedIn: boolean = false;
-  products = [
-    { id: 1, name: 'Product A', price: 100 },
-    { id: 2, name: 'Product B', price: 200 },
-    { id: 3, name: 'Product C', price: 300 },
-  ];
+export class ProductsComponent implements OnInit {
+  products: any[] = [];
+  productForm: FormGroup;
+  editingProductId: number | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.checkLoginStatus();
-    } else {
-      this.isLoggedIn = false;
-    }
+  private apiUrl = 'http://127.0.0.1:5000/products'; // Flask backend URL
+  private token = localStorage.getItem('token'); // Assume the token is stored during login
+
+  constructor(private http: HttpClient, private fb: FormBuilder) {
+    this.productForm = this.fb.group({
+      name: [''],
+      description: [''],
+      price: [''],
+      quantity: [''],
+    });
   }
 
-  checkLoginStatus() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const parts = token.split('.');
-        if (parts.length !== 3) {
-          throw new Error('Invalid token format');
-        }
+  ngOnInit(): void {
+    this.loadProducts();
+  }
 
-        const payload = JSON.parse(atob(parts[1])); // Decode JWT payload
-        console.log('Decoded Payload:', payload);
+  private getAuthHeaders() {
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`,
+      }),
+    };
+  }
 
-        // If the token is valid, set the user as logged in
-        this.isLoggedIn = true;
-      } catch (error) {
-        console.error('Failed to parse token:', error);
-        this.isLoggedIn = false;
-      }
-    } else {
-      console.log('No token found in localStorage');
-      this.isLoggedIn = false;
-    }
+  loadProducts(): void {
+    this.http.get<any[]>(this.apiUrl, this.getAuthHeaders()).subscribe({
+      next: (data) => {
+        this.products = data;
+      },
+      error: (err) => {
+        console.error('Error fetching products:', err);
+      },
+    });
+  }
+
+  addProduct(): void {
+    const productData = this.productForm.value;
+    this.http.post(this.apiUrl, productData, this.getAuthHeaders()).subscribe({
+      next: () => {
+        this.loadProducts();
+        this.productForm.reset();
+      },
+      error: (err) => {
+        console.error('Error adding product:', err);
+      },
+    });
+  }
+
+  editProduct(product: any): void {
+    this.editingProductId = product.id;
+    this.productForm.patchValue(product);
+  }
+
+  updateProduct(): void {
+    const productData = this.productForm.value;
+    const url = `${this.apiUrl}/${this.editingProductId}`;
+    this.http.put(url, productData, this.getAuthHeaders()).subscribe({
+      next: () => {
+        this.loadProducts();
+        this.editingProductId = null;
+        this.productForm.reset();
+      },
+      error: (err) => {
+        console.error('Error updating product:', err);
+      },
+    });
+  }
+
+  deleteProduct(productId: number): void {
+    const url = `${this.apiUrl}/${productId}`;
+    this.http.delete(url, this.getAuthHeaders()).subscribe({
+      next: () => {
+        this.loadProducts();
+      },
+      error: (err) => {
+        console.error('Error deleting product:', err);
+      },
+    });
   }
 }

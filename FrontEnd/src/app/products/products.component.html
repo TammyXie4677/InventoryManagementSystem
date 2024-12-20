@@ -1,14 +1,38 @@
-<div *ngIf="isLoggedIn; else notLoggedIn">
-  <h1>Product List</h1>
+<div>
+  <h1>Products</h1>
+
+  <form [formGroup]="productForm" (ngSubmit)="editingProductId ? updateProduct() : addProduct()">
+    <label>
+      Name:
+      <input formControlName="name" required />
+    </label>
+    <label>
+      Description:
+      <input formControlName="description" />
+    </label>
+    <label>
+      Price:
+      <input formControlName="price" type="number" required />
+    </label>
+    <label>
+      Quantity:
+      <input formControlName="quantity" type="number" />
+    </label>
+    <button type="submit">{{ editingProductId ? 'Update Product' : 'Add Product' }}</button>
+    <button type="button" (click)="productForm.reset()" *ngIf="editingProductId">Cancel</button>
+  </form>
+
   <ul>
     <li *ngFor="let product of products">
-      {{ product.name }} - ${{ product.price }}
+      <strong>{{ product.name }}</strong> - ${{ product.price }}
+      <p>{{ product.description }}</p>
+      <p>Quantity: {{ product.quantity }}</p>
+      <button (click)="editProduct(product)">Edit</button>
+      <button (click)="deleteProduct(product.id)">Delete</button>
     </li>
   </ul>
 </div>
-<ng-template #notLoggedIn>
-  <p>You are not logged in. Please <a [routerLink]="['/login']">log in</a>.</p>
-</ng-template>
+
 
 
   
