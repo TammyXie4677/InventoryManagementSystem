@@ -26,7 +26,6 @@
     </tbody>
   </table>
   <form *ngIf="editingProduct; else createForm" (submit)="updateProduct(); $event.preventDefault()">
-    <h3>Edit Product</h3>
     <input [(ngModel)]="editingProduct.name" name="name" type="text" placeholder="Product Name" required />
     <input [(ngModel)]="editingProduct.description" name="description" type="text" placeholder="Description" />
     <input [(ngModel)]="editingProduct.price" name="price" type="number" placeholder="Price" required />
@@ -38,7 +37,6 @@
   </form>
 
   <ng-template #createForm>
-    <h3>Create Product</h3>
     <form (submit)="createProduct({ name: productName.value, description: productDescription.value, price: +productPrice.value, 
       quantity: +productQuantity.value }); $event.preventDefault()">
       <input #productName type="text" placeholder="Product Name" required />
