@@ -192,7 +192,6 @@ def edit_product(product_id):
 
     data = request.get_json()
 
-    # 更新产品的字段
     product.name = data.get('name', product.name)
     product.description = data.get('description', product.description)
     product.price = data.get('price', product.price)
