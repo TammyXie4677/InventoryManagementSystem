@@ -1,2 +1,2 @@
 # InventoryManagementSystem
-An inventory management system for books
+An inventory management system 
